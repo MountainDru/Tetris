@@ -6,12 +6,12 @@
 package at.bejinariu.controller;
 
 import at.bejinariu.models.Highscore;
-import at.bejinariu.models.Piece;
 import java.net.URL;
 import java.io.*;
-import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -62,19 +62,15 @@ public class HighscorePaneController implements Initializable {
     public void readEntries() {
         listScores.clear();
         try {
-            File scoresFile = new File(Piece.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            try (BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(scoresFile.getParentFile().getPath() + "/scores.csv")))) {
-                String line = null;
-                while ((line = buffer.readLine()) != null && !line.isEmpty()) {
-                    listScores.add(Highscore.fromCSVLine(line));
-                }
-            } catch (Exception e) {
-                System.out.println(e.getClass() + " " + e.getMessage());
-            }
-            tblTableList.sort();
-        } catch (URISyntaxException e) {
+        listScores.addAll(
+                    Files.lines(new File("src/main/resources/files/scores.csv").toPath())
+                            .filter(line -> line != null && !line.isEmpty())
+                            .map(line -> Highscore.fromCSVLine(line))
+                            .collect(Collectors.toList()));
+            
+        } catch (IOException e) {
             System.out.println(e.getClass() + " " + e.getMessage());
         }
-
+        tblTableList.sort();
     }
 }

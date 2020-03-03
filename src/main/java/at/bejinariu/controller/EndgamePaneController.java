@@ -6,13 +6,11 @@
 package at.bejinariu.controller;
 
 import at.bejinariu.models.Highscore;
-import at.bejinariu.models.Piece;
 import at.bejinariu.tetris.MainApp;
 import at.bejinariu.tetris.Utilities;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
@@ -38,8 +36,6 @@ import javafx.stage.Stage;
  */
 public class EndgamePaneController implements Initializable {
 
-    
-    
     @FXML
     private Label lblPoints;
     @FXML
@@ -101,18 +97,15 @@ public class EndgamePaneController implements Initializable {
         Highscore hs = new Highscore(score,
                 lblPlayername.getText(),
                 LocalDateTime.now());
-        try {
-            File scoresFile = new File(Piece.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scoresFile.getParentFile().getPath() + "/scores.csv", Boolean.TRUE))) {
-                bw.newLine();
-                bw.write(hs.toCSVLine());
-                bw.flush();
-            } catch (Exception io) {
-                System.out.println(io.getClass() + " " + io.getMessage());
-            }
-        } catch (URISyntaxException io) {
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File("src/main/resources/files/scores.csv"), Boolean.TRUE))) {
+            bw.newLine();
+            bw.write(hs.toCSVLine());
+            bw.flush();
+        } catch (Exception io) {
             System.out.println(io.getClass() + " " + io.getMessage());
         }
+
         Utilities.showNormalMessage("Information", "Score stored successfully!", "", Alert.AlertType.INFORMATION, ICON, false);
         saveButtonDiasable.set(true);
 
