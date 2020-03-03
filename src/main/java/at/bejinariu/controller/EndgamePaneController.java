@@ -38,6 +38,8 @@ import javafx.stage.Stage;
  */
 public class EndgamePaneController implements Initializable {
 
+    
+    
     @FXML
     private Label lblPoints;
     @FXML
